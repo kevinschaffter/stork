@@ -1,0 +1,68 @@
+{
+  "name": "zod-async-storage",
+  "version": "0.1.0",
+  "description": "Zod-validated wrapper around @react-native-async-storage/async-storage with type-safe APIs",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "react-native": "./dist/index.mjs",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/**",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "dev": "tsup --watch",
+    "lint": "biome check . --write --unsafe",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "asyncstorage",
+    "zod",
+    "validation",
+    "typescript"
+  ],
+  "author": "Kevin Schaffter <kevinschaffter@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevin/zod-async-storage.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kevin/zod-async-storage/issues"
+  },
+  "homepage": "https://github.com/kevin/zod-async-storage#readme",
+  "peerDependencies": {
+    "@react-native-async-storage/async-storage": ">=2.2.0",
+    "react": ">=19.1.1",
+    "react-native": ">=0.80.2",
+    "zod": ">=4.0.15"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.4",
+    "@changesets/cli": "^2.29.5",
+    "tsup": "^8.5.0",
+    "typescript": "~5.8.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

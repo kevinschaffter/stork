@@ -1,0 +1,27 @@
+{
+	"name": "zod-async-storage-workspace",
+	"private": true,
+	"version": "0.0.0",
+	"description": "Monorepo for zod-async-storage",
+	"packageManager": "pnpm@10.14.0",
+	"scripts": {
+		"build": "turbo run build",
+		"typecheck": "turbo run typecheck",
+		"test": "turbo run test",
+		"lint": "biome check . --write --unsafe",
+		"release": "changeset publish",
+		"changeset": "changeset",
+		"prepublishOnly": "pnpm -w build",
+		"sherif:fix": "sherif --fix"
+	},
+	"engines": {
+		"node": ">=18"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.1.4",
+		"@changesets/cli": "^2.29.5",
+		"sherif": "^1.6.1",
+		"turbo": "^2.5.5",
+		"typescript": "~5.8.3"
+	}
+}

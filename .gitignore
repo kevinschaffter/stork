@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+
+# Environment variables
+.env*
+
+# Logs
+*.log
+
+# Cache
+.turbo/
+*.tsbuildinfo
+
+# OS
+.DS_Store
