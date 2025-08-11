@@ -1,18 +1,20 @@
 {
-	"name": "zod-async-storage-workspace",
+	"name": "@stork",
 	"private": true,
 	"version": "0.0.0",
-	"description": "Monorepo for zod-async-storage",
+	"description": "TypeScript libraries for type-safe storage solutions with Zod validation",
 	"packageManager": "pnpm@10.14.0",
 	"scripts": {
 		"build": "turbo run build",
 		"typecheck": "turbo run typecheck",
 		"test": "turbo run test",
-		"lint": "biome check . --write --unsafe",
+		"lint:fix": "biome check . --write --unsafe",
+		"lint": "biome check .",
 		"release": "changeset publish",
 		"changeset": "changeset",
 		"prepublishOnly": "pnpm -w build",
-		"sherif:fix": "sherif --fix"
+		"sherif:fix": "sherif --fix",
+		"sherif": "sherif"
 	},
 	"engines": {
 		"node": ">=18"
@@ -22,6 +24,6 @@
 		"@changesets/cli": "^2.29.5",
 		"sherif": "^1.6.1",
 		"turbo": "^2.5.5",
-		"typescript": "~5.8.3"
+		"typescript": "^5.9.2"
 	}
 }
