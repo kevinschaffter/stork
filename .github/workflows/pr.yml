@@ -3,7 +3,7 @@ name: Pull request
 on: pull_request
 
 jobs:
-  check:
+  pr-checks:
     runs-on: ubuntu-latest
 
     steps:
@@ -29,6 +29,9 @@ jobs:
 
       - name: Typecheck
         run: pnpm typecheck
+
+      - name: Sherif
+        run: pnpm sherif
 
       - name: Test
         run: pnpm test
