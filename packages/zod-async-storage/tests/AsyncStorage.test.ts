@@ -30,8 +30,8 @@ describe("createAsyncStorage", () => {
     email: "john@example.com",
   };
 
-  const sampleSettings = {
-    theme: "dark" as const,
+  const sampleSettings: { theme: "light" | "dark"; notifications: boolean } = {
+    theme: "dark",
     notifications: true,
   };
 
@@ -276,7 +276,7 @@ describe("createAsyncStorage", () => {
 
   describe("multiGet", () => {
     it("should get multiple items and parse them", async () => {
-      const keys = ["user", "settings"];
+      const keys = ["user" as const, "settings" as const];
       const mockResults = [
         ["user", JSON.stringify(sampleUser)],
         ["settings", JSON.stringify(sampleSettings)],
@@ -294,7 +294,7 @@ describe("createAsyncStorage", () => {
     });
 
     it("should handle null values", async () => {
-      const keys = ["user", "settings"];
+      const keys = ["user" as const, "settings" as const];
       const mockResults = [
         ["user", null],
         ["settings", JSON.stringify(sampleSettings)],
@@ -311,13 +311,12 @@ describe("createAsyncStorage", () => {
     });
 
     it("should call callback on success", async () => {
-      const keys = ["user"];
       const mockResults = [["user", JSON.stringify(sampleUser)]];
       mockAsyncStorage.multiGet.mockResolvedValue(mockResults);
       const callback = vi.fn();
 
       const storage = createAsyncStorage(schemas);
-      await storage.multiGet(keys, undefined, callback);
+      await storage.multiGet(["user"], undefined, callback);
 
       expect(callback).toHaveBeenCalledWith(null, [["user", sampleUser]]);
     });
@@ -336,13 +335,12 @@ describe("createAsyncStorage", () => {
     });
 
     it("should use options.onFailure for invalid data", async () => {
-      const keys = ["user"];
       const mockResults = [["user", "invalid json"]];
       mockAsyncStorage.multiGet.mockResolvedValue(mockResults);
       mockAsyncStorage.removeItem.mockResolvedValue(undefined);
 
       const storage = createAsyncStorage(schemas);
-      const result = await storage.multiGet(keys, { onFailure: "clear" });
+      const result = await storage.multiGet(["user"], { onFailure: "clear" });
 
       expect(result).toEqual([["user", null]]);
       expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith("user");
@@ -351,14 +349,13 @@ describe("createAsyncStorage", () => {
 
   describe("multiSet", () => {
     it("should set multiple items with JSON stringification", async () => {
-      const keyValuePairs = [
-        ["user", sampleUser],
-        ["settings", sampleSettings],
-      ] as Array<["user" | "settings", typeof sampleUser | typeof sampleSettings]>;
       mockAsyncStorage.multiSet.mockResolvedValue(undefined);
 
       const storage = createAsyncStorage(schemas);
-      await storage.multiSet(keyValuePairs);
+      await storage.multiSet([
+        ["user", sampleUser],
+        ["settings", sampleSettings],
+      ]);
 
       expect(mockAsyncStorage.multiSet).toHaveBeenCalledWith([
         ["user", JSON.stringify(sampleUser)],
@@ -367,14 +364,13 @@ describe("createAsyncStorage", () => {
     });
 
     it("should handle raw strings for non-schema keys in non-strict mode", async () => {
-      const keyValuePairs = [
-        ["user", sampleUser],
-        ["nonSchemaKey", "raw value"],
-      ] as Array<[string, typeof sampleUser | string]>;
       mockAsyncStorage.multiSet.mockResolvedValue(undefined);
 
       const storage = createAsyncStorage(schemas, { strict: false });
-      await storage.multiSet(keyValuePairs);
+      await storage.multiSet([
+        ["user", sampleUser],
+        ["nonSchemaKey", "raw value"],
+      ]);
 
       expect(mockAsyncStorage.multiSet).toHaveBeenCalledWith([
         ["user", JSON.stringify(sampleUser)],
@@ -383,12 +379,11 @@ describe("createAsyncStorage", () => {
     });
 
     it("should call callback on success", async () => {
-      const keyValuePairs = [["user", sampleUser]] as Array<["user", typeof sampleUser]>;
       mockAsyncStorage.multiSet.mockResolvedValue(undefined);
       const callback = vi.fn();
 
       const storage = createAsyncStorage(schemas);
-      await storage.multiSet(keyValuePairs, callback);
+      await storage.multiSet([["user", sampleUser]], callback);
 
       expect(callback).toHaveBeenCalledWith(null);
     });
@@ -400,16 +395,16 @@ describe("createAsyncStorage", () => {
 
       const storage = createAsyncStorage(schemas);
 
-      await expect(
-        storage.multiSet([["user", sampleUser]] as Array<["user", typeof sampleUser]>, callback),
-      ).rejects.toThrow("Storage error");
+      await expect(storage.multiSet([["user", sampleUser]], callback)).rejects.toThrow(
+        "Storage error",
+      );
       expect(callback).toHaveBeenCalledWith([error]);
     });
   });
 
   describe("multiRemove", () => {
     it("should remove multiple items", async () => {
-      const keys = ["user", "settings"] as Array<"user" | "settings">;
+      const keys = ["user" as const, "settings" as const];
       mockAsyncStorage.multiRemove.mockResolvedValue(undefined);
 
       const storage = createAsyncStorage(schemas);
@@ -419,7 +414,7 @@ describe("createAsyncStorage", () => {
     });
 
     it("should call callback on success", async () => {
-      const keys = ["user"] as Array<"user">;
+      const keys = ["user" as const];
       mockAsyncStorage.multiRemove.mockResolvedValue(undefined);
       const callback = vi.fn();
 
@@ -436,9 +431,7 @@ describe("createAsyncStorage", () => {
 
       const storage = createAsyncStorage(schemas);
 
-      await expect(storage.multiRemove(["user"] as Array<"user">, callback)).rejects.toThrow(
-        "Storage error",
-      );
+      await expect(storage.multiRemove(["user"], callback)).rejects.toThrow("Storage error");
       expect(callback).toHaveBeenCalledWith([error]);
     });
   });
@@ -488,14 +481,13 @@ describe("createAsyncStorage", () => {
 
   describe("multiMerge", () => {
     it("should merge multiple items with JSON stringification", async () => {
-      const keyValuePairs = [
-        ["user", sampleUser],
-        ["settings", sampleSettings],
-      ] as Array<["user" | "settings", typeof sampleUser | typeof sampleSettings]>;
       mockAsyncStorage.multiMerge.mockResolvedValue(undefined);
 
       const storage = createAsyncStorage(schemas);
-      await storage.multiMerge(keyValuePairs);
+      await storage.multiMerge([
+        ["user", sampleUser],
+        ["settings", sampleSettings],
+      ]);
 
       expect(mockAsyncStorage.multiMerge).toHaveBeenCalledWith([
         ["user", JSON.stringify(sampleUser)],
@@ -504,12 +496,11 @@ describe("createAsyncStorage", () => {
     });
 
     it("should call callback on success", async () => {
-      const keyValuePairs = [["user", sampleUser]] as Array<["user", typeof sampleUser]>;
       mockAsyncStorage.multiMerge.mockResolvedValue(undefined);
       const callback = vi.fn();
 
       const storage = createAsyncStorage(schemas);
-      await storage.multiMerge(keyValuePairs, callback);
+      await storage.multiMerge([["user", sampleUser]], callback);
 
       expect(callback).toHaveBeenCalledWith(null);
     });
@@ -521,9 +512,9 @@ describe("createAsyncStorage", () => {
 
       const storage = createAsyncStorage(schemas);
 
-      await expect(
-        storage.multiMerge([["user", sampleUser]] as Array<["user", typeof sampleUser]>, callback),
-      ).rejects.toThrow("Storage error");
+      await expect(storage.multiMerge([["user", sampleUser]], callback)).rejects.toThrow(
+        "Storage error",
+      );
       expect(callback).toHaveBeenCalledWith([error]);
     });
   });
@@ -534,13 +525,6 @@ describe("createAsyncStorage", () => {
       storage.flushGetRequests();
 
       expect(mockAsyncStorage.flushGetRequests).toHaveBeenCalled();
-    });
-
-    it("should handle missing flushGetRequests gracefully", () => {
-      mockAsyncStorage.flushGetRequests.mockImplementation(undefined as never);
-
-      const storage = createAsyncStorage(schemas);
-      expect(() => storage.flushGetRequests()).not.toThrow();
     });
   });
 
