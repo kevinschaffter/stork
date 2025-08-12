@@ -32,10 +32,15 @@
   "keywords": [
     "react-native",
     "expo",
-    "asyncStorage",
+    "async-storage",
+    "AsyncStorage",
     "zod",
     "validation",
+    "schema",
     "typescript",
+    "persistence",
+    "mobile",
+    "storage",
     "react-native-async-storage"
   ],
   "author": "Kevin Schaffter <kevinschaffter@gmail.com>",
