@@ -1,6 +1,6 @@
-# @stork/zod-async-storage
+# @stork-tools/zod-async-storage
 
-[![npm version](https://img.shields.io/npm/v/zod-async-storage.svg)](https://www.npmjs.com/package/zod-async-storage)
+[![npm version](https://img.shields.io/npm/v/@stork-tools/zod-async-storage.svg)](https://www.npmjs.com/package/@stork-tools/zod-async-storage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
@@ -20,23 +20,23 @@ A **type-safe** and **validated** wrapper around `@react-native-async-storage/as
 
 ```bash
 # Using pnpm (recommended)
-pnpm add zod-async-storage zod @react-native-async-storage/async-storage
+pnpm add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 
 # Using npm
-npm install zod-async-storage zod @react-native-async-storage/async-storage
+npm install @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 
 # Using yarn
-yarn add zod-async-storage zod @react-native-async-storage/async-storage
+yarn add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 
 # Using bun
-bun add zod-async-storage zod @react-native-async-storage/async-storage
+bun add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 ```
 
 ## 🚀 Quick Start
 
 ```ts
 import { z } from "zod";
-import { createAsyncStorage } from "zod-async-storage";
+import { createAsyncStorage } from "@stork-tools/zod-async-storage";
 
 // Define your schemas
 const schemas = {
@@ -151,7 +151,7 @@ await storage.multiSet([
 
 ```ts
 import { z } from "zod";
-import { createAsyncStorage } from "zod-async-storage";
+import { createAsyncStorage } from "@stork-tools/zod-async-storage";
 
 const schemas = {
   user: z.object({
@@ -196,7 +196,7 @@ await storage.getItem("someUndefinedKey");   // ❌ TypeScript error
 
 ### Loose Mode
 
-Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
+Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
 
 ```ts
 const storage = createAsyncStorage(schemas, { strict: false });
@@ -260,13 +260,49 @@ const storage = createAsyncStorage(schemas, {
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+We welcome contributions from the community! Whether you're fixing bugs, adding features, improving documentation, or sharing feedback, your help makes this project better.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Quick Start for Contributors
+
+1. **Fork the repository** on GitHub
+2. **Clone your fork** locally:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/stork.git
+   cd stork
+   ```
+3. **Install dependencies**:
+   ```bash
+   pnpm install
+   ```
+4. **Create a feature branch**:
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+5. **Make your changes** following our coding standards
+6. **Add a changeset** (for user-facing changes):
+   ```bash
+   pnpm changeset
+   ```
+7. **Commit and push** your changes
+8. **Open a Pull Request** - CI will handle testing and validation
+
+### Types of Contributions
+
+- 🐛 **Bug Reports**: Use our [bug report template](.github/ISSUE_TEMPLATE/bug_report.yml)
+- ✨ **Feature Requests**: Use our [feature request template](.github/ISSUE_TEMPLATE/feature_request.yml)
+- 💻 **Code Contributions**: Follow our coding standards and include tests
+- 📚 **Documentation**: Help improve our docs and examples
+- 🧪 **Testing**: Add or improve test coverage
+- 💬 **Discussions**: Share ideas in [GitHub Discussions](https://github.com/kevinschaffter/stork/discussions)
+
+### Key Guidelines
+
+- **Type Safety**: No `any` types, use type guards over casting
+- **Testing**: Include tests for new features and bug fixes
+- **Changesets**: Run `pnpm changeset` for user-facing changes
+- **Code Style**: Follow existing patterns, JSDoc for public APIs
+
+For detailed contributing guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## 📝 License
 

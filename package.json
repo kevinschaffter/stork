@@ -1,5 +1,5 @@
 {
-  "name": "@stork",
+  "name": "@stork-tools",
   "private": true,
   "version": "0.0.0",
   "description": "TypeScript libraries for type-safe storage solutions with Zod validation",
