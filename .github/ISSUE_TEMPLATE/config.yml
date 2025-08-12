@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussion
+    url: https://github.com/kevinschaffter/stork/discussions
+    about: Ask questions, share ideas, or discuss the project with the community
+  - name: 📚 Documentation
+    url: https://github.com/kevinschaffter/stork#readme
+    about: Check out the documentation for usage examples and API reference
+  - name: 🆘 Support
+    url: https://github.com/kevinschaffter/stork/discussions/categories/q-a
+    about: Get help with implementation or usage questions
