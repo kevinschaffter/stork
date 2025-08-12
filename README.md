@@ -6,7 +6,7 @@
 
 A **type-safe** and **validated** wrapper around `@react-native-async-storage/async-storage` using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with AsyncStorage in React Native and Expo applications.
 
-## ✨ Features
+## ✨ Featuress
 
 - 🛡️ **Type Safety**: Full TypeScript support with automatic type inference from Zod schemas
 - ✅ **Runtime Validation**: Automatic validation of stored/retrieved data using Zod schemas
