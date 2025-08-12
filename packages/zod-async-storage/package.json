@@ -1,5 +1,5 @@
 {
-  "name": "@stork/zod-async-storage",
+  "name": "@stork-tools/zod-async-storage",
   "version": "0.1.0",
   "description": "Zod-validated wrapper around @react-native-async-storage/async-storage with type-safe APIs",
   "type": "module",
@@ -42,12 +42,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kevin/zod-async-storage.git"
+    "url": "git+https://github.com/kevinschaffter/stork.git"
   },
   "bugs": {
-    "url": "https://github.com/kevin/zod-async-storage/issues"
+    "url": "https://github.com/kevinschaffter/stork/issues"
   },
-  "homepage": "https://github.com/kevin/zod-async-storage#readme",
+  "homepage": "https://github.com/kevinschaffter/stork#readme",
   "peerDependencies": {
     "@react-native-async-storage/async-storage": ">=2.0.0",
     "zod": ">=4.0.0"
