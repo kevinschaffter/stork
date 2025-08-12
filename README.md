@@ -1,12 +1,12 @@
-# @stork/zod-async-storage
+# @stork-tools/zod-async-storage
 
-[![npm version](https://img.shields.io/npm/v/zod-async-storage.svg)](https://www.npmjs.com/package/zod-async-storage)
+[![npm version](https://img.shields.io/npm/v/@stork-tools/zod-async-storage.svg)](https://www.npmjs.com/package/@stork-tools/zod-async-storage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
 A **type-safe** and **validated** wrapper around `@react-native-async-storage/async-storage` using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with AsyncStorage in React Native and Expo applications.
 
-## ✨ Featuress
+## ✨ Features
 
 - 🛡️ **Type Safety**: Full TypeScript support with automatic type inference from Zod schemas
 - ✅ **Runtime Validation**: Automatic validation of stored/retrieved data using Zod schemas
@@ -20,23 +20,23 @@ A **type-safe** and **validated** wrapper around `@react-native-async-storage/as
 
 ```bash
 # Using pnpm (recommended)
-pnpm add zod-async-storage zod @react-native-async-storage/async-storage
+pnpm add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 
 # Using npm
-npm install zod-async-storage zod @react-native-async-storage/async-storage
+npm install @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 
 # Using yarn
-yarn add zod-async-storage zod @react-native-async-storage/async-storage
+yarn add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 
 # Using bun
-bun add zod-async-storage zod @react-native-async-storage/async-storage
+bun add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
 ```
 
 ## 🚀 Quick Start
 
 ```ts
 import { z } from "zod";
-import { createAsyncStorage } from "zod-async-storage";
+import { createAsyncStorage } from "@stork-tools/zod-async-storage";
 
 // Define your schemas
 const schemas = {
@@ -151,7 +151,7 @@ await storage.multiSet([
 
 ```ts
 import { z } from "zod";
-import { createAsyncStorage } from "zod-async-storage";
+import { createAsyncStorage } from "@stork-tools/zod-async-storage";
 
 const schemas = {
   user: z.object({
@@ -196,7 +196,7 @@ await storage.getItem("someUndefinedKey");   // ❌ TypeScript error
 
 ### Loose Mode
 
-Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
+Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
 
 ```ts
 const storage = createAsyncStorage(schemas, { strict: false });
