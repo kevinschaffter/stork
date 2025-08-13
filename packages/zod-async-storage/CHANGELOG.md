@@ -1,5 +1,11 @@
 # @stork-tools/zod-async-storage
 
+## 0.2.2
+
+### Patch Changes
+
+- 9789416: docs: add hook documentation
+
 ## 0.2.1
 
 ### Patch Changes
