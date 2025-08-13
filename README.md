@@ -52,16 +52,16 @@ const schemas = {
 };
 
 // Create type-safe storage
-const storage = createAsyncStorage(schemas);
+const AsyncStorage = createAsyncStorage(schemas);
 
 // Use with full type safety
-await storage.setItem("user", {
+await AsyncStorage.setItem("user", {
   id: "123",
   name: "John Doe",
   email: "john@example.com",
 });
 
-const user = await storage.getItem("user"); // Type: User | null
+const user = await AsyncStorage.getItem("user"); // Type: User | null
 ```
 
 ## 📖 API Reference
@@ -94,11 +94,11 @@ All methods maintain the same signature as AsyncStorage but with added type safe
 Retrieves and validates an item from storage.
 
 ```ts
-const user = await storage.getItem("user");
+const user = await AsyncStorage.getItem("user");
 // Type: { id: string; name: string; email: string } | null
 
 // Per-operation options
-const user = await storage.getItem("user", { onFailure: "throw" });
+const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
 ```
 
 #### `setItem(key, value, callback?)`
@@ -106,13 +106,13 @@ const user = await storage.getItem("user", { onFailure: "throw" });
 Stores an item with automatic serialization and type validation.
 
 ```ts
-await storage.setItem("user", {
+await AsyncStorage.setItem("user", {
   id: "123",
   name: "John Doe",
   email: "john@example.com",
 }); // ✅ Type-safe
 
-await storage.setItem("user", { invalid: "data" }); // ❌ TypeScript error
+await AsyncStorage.setItem("user", { invalid: "data" }); // ❌ TypeScript error
 ```
 
 #### `multiGet(keys, options?, callback?)`
@@ -120,7 +120,7 @@ await storage.setItem("user", { invalid: "data" }); // ❌ TypeScript error
 Retrieves multiple items with type safety for each key.
 
 ```ts
-const results = await storage.multiGet(["user", "settings"]);
+const results = await AsyncStorage.multiGet(["user", "settings"]);
 // Type: [["user", User | null], ["settings", Settings | null]]
 ```
 
@@ -129,7 +129,7 @@ const results = await storage.multiGet(["user", "settings"]);
 Sets multiple items with type validation.
 
 ```ts
-await storage.multiSet([
+await AsyncStorage.multiSet([
   ["user", { id: "123", name: "John", email: "john@example.com" }],
   ["settings", { theme: "dark", notifications: true }],
 ]);
@@ -164,10 +164,10 @@ const schemas = {
   }),
 };
 
-const storage = createAsyncStorage(schemas);
+const AsyncStorage = createAsyncStorage(schemas);
 
 // Set data
-await storage.setItem("user", {
+await AsyncStorage.setItem("user", {
   id: "u1",
   name: "Alice",
   preferences: {
@@ -177,7 +177,7 @@ await storage.setItem("user", {
 });
 
 // Get data (fully typed)
-const user = await storage.getItem("user");
+const user = await AsyncStorage.getItem("user");
 if (user) {
   console.log(user.preferences.theme); // TypeScript knows this exists
 }
@@ -188,10 +188,10 @@ if (user) {
 By default, strict mode is enabled to prevent access to undefined keys:
 
 ```ts
-const storage = createAsyncStorage(schemas); // strict: true by default
+const AsyncStorage = createAsyncStorage(schemas); // strict: true by default
 
-await storage.getItem("user");        // ✅ OK
-await storage.getItem("someUndefinedKey");   // ❌ TypeScript error
+await AsyncStorage.getItem("user");        // ✅ OK
+await AsyncStorage.getItem("someUndefinedKey");   // ❌ TypeScript error
 ```
 
 ### Loose Mode
@@ -199,10 +199,10 @@ await storage.getItem("someUndefinedKey");   // ❌ TypeScript error
 Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
 
 ```ts
-const storage = createAsyncStorage(schemas, { strict: false });
+const AsyncStorage = createAsyncStorage(schemas, { strict: false });
 
-await storage.getItem("user");      // Type: User | null (validated)
-await storage.getItem("any-key");   // Type: string | null (loose autocomplete, no validation)
+await AsyncStorage.getItem("user");      // Type: User | null (validated)
+await AsyncStorage.getItem("any-key");   // Type: string | null (loose autocomplete, no validation)
 ```
 
 With `strict: false`, you get:
@@ -216,13 +216,13 @@ Configure how validation failures are handled:
 
 ```ts
 // Clear invalid data (default)
-const storage = createAsyncStorage(schemas, { onFailure: "clear" });
+const AsyncStorage = createAsyncStorage(schemas, { onFailure: "clear" });
 
 // Throw errors on invalid data
-const storage = createAsyncStorage(schemas, { onFailure: "throw" });
+const AsyncStorage = createAsyncStorage(schemas, { onFailure: "throw" });
 
 // Per-operation override
-const user = await storage.getItem("user", { onFailure: "throw" });
+const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
 ```
 
 ### Working with Raw Strings
@@ -235,12 +235,39 @@ const schemas = {
   // 'token' has no schema
 };
 
-const storage = createAsyncStorage(schemas);
+const AsyncStorage = createAsyncStorage(schemas);
 
-await storage.setItem("user", { name: "John" });  // Validated object
-await storage.setItem("token", "abc123");         // Raw string
+await AsyncStorage.setItem("user", { name: "John" });  // Validated object
+await AsyncStorage.setItem("token", "abc123");         // Raw string
 ```
 
+
+## 🪝 React Hooks
+
+```ts
+import { createAsyncStorage, createUseAsyncStorage } from "@stork-tools/zod-async-storage";
+
+const storage = createAsyncStorage(schemas);
+const { useAsyncStorage } = createUseAsyncStorage(storage);
+
+function UserProfile() {
+  const { getItem, setItem, removeItem } = useAsyncStorage("user");
+  
+  const loadUser = async () => {
+    const user = await getItem(); // Fully typed
+  };
+  
+  const saveUser = async () => {
+    await setItem({ id: "123", name: "John" });
+  };
+  
+  const clearUser = async () => {
+    await removeItem();
+  };
+  
+  // Your component JSX...
+}
+```
 
 ## 🔧 Advanced Configuration
 
@@ -249,7 +276,7 @@ await storage.setItem("token", "abc123");         // Raw string
 Enable debug logging to monitor validation failures:
 
 ```ts
-const storage = createAsyncStorage(schemas, {
+const AsyncStorage = createAsyncStorage(schemas, {
   debug: true,
   onFailure: "clear",
 });
