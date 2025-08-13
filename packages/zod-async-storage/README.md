@@ -243,6 +243,44 @@ await AsyncStorage.setItem("token", "abc123");         // Raw string
 ```
 
 
+## 🪝 React Hooks
+
+```ts
+import { createAsyncStorage, createUseAsyncStorage } from "@stork-tools/zod-async-storage";
+
+const storage = createAsyncStorage(schemas);
+const { useAsyncStorage } = createUseAsyncStorage(storage);
+
+function UserProfile() {
+  const { getItem, setItem, mergeItem, removeItem } = useAsyncStorage("user");
+  
+  const loadUser = async () => {
+    const user = await getItem(); // Type: User | null
+  };
+  
+  const saveUser = async () => {
+    await setItem({ id: "123", name: "John", email: "john@example.com" });
+  };
+  
+  const updateUser = async () => {
+    await mergeItem({ name: "Updated Name" });
+  };
+  
+  const clearUser = async () => {
+    await removeItem();
+  };
+}
+```
+
+### Hook Methods
+
+- `getItem(options?, callback?)` - Retrieve item with type safety
+- `setItem(value, callback?)` - Store item with validation  
+- `mergeItem(value, callback?)` - Merge with existing data
+- `removeItem(callback?)` - Remove item from storage
+
+All methods support the same options and callbacks as the storage instance.
+
 ## 🔧 Advanced Configuration
 
 ### Debug Mode

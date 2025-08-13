@@ -242,6 +242,33 @@ await AsyncStorage.setItem("token", "abc123");         // Raw string
 ```
 
 
+## 🪝 React Hooks
+
+```ts
+import { createAsyncStorage, createUseAsyncStorage } from "@stork-tools/zod-async-storage";
+
+const storage = createAsyncStorage(schemas);
+const { useAsyncStorage } = createUseAsyncStorage(storage);
+
+function UserProfile() {
+  const { getItem, setItem, removeItem } = useAsyncStorage("user");
+  
+  const loadUser = async () => {
+    const user = await getItem(); // Fully typed
+  };
+  
+  const saveUser = async () => {
+    await setItem({ id: "123", name: "John" });
+  };
+  
+  const clearUser = async () => {
+    await removeItem();
+  };
+  
+  // Your component JSX...
+}
+```
+
 ## 🔧 Advanced Configuration
 
 ### Debug Mode
