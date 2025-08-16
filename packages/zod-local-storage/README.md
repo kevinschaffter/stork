@@ -83,6 +83,7 @@ type GlobalOptions = {
   strict?: boolean;        // Enforce only defined keys (default: true)
   onFailure?: "clear" | "throw"; // Handle zod validation failures (default: "clear")
   debug?: boolean;         // Enable debug logging (default: false)
+  onValidationError?: (key: string, error: z.ZodError, value: unknown) => void; // Callback on validation failure
 };
 ```
 
@@ -227,6 +228,42 @@ const storage = createLocalStorage(schemas, { onFailure: "throw" });
 // Per-operation override
 const user = localStorage.getItem("user", { onFailure: "throw" });
 ```
+
+#### Validation Error Callbacks
+
+Get notified when validation fails using the `onValidationError` callback:
+
+```ts
+const storage = createLocalStorage(schemas, {
+  onFailure: "clear",
+  onValidationError: (key, error, value) => {
+    // Log validation failures for monitoring
+    console.warn(`Validation failed for key "${key}":`, error.message);
+    
+    // Send to analytics
+    analytics.track('validation_error', {
+      key,
+      errors: error.issues,
+      invalidValue: value
+    });
+  }
+});
+
+// Per-operation callback override
+const user = storage.getItem("user", {
+  onValidationError: (key, error, value) => {
+    // Handle this specific validation error differently
+    showUserErrorMessage(`Invalid user data: ${error.message}`);
+  }
+});
+```
+
+The callback receives:
+- `key`: The storage key that failed validation
+- `error`: The Zod validation error with detailed issues
+- `value`: The raw parsed value that failed validation
+
+**Note**: The callback is only called for Zod schema validation failures, not for JSON parsing errors.
 
 ### Working with Raw Strings
 

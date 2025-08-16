@@ -86,6 +86,87 @@ describe("createLocalStorage", () => {
       expect(result).toBeNull();
       expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("user");
     });
+
+    describe("onValidationError callback", () => {
+      it("should call global onValidationError on schema validation failure with clear mode", () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        mockLocalStorage.getItem.mockReturnValue(JSON.stringify(invalidUser));
+
+        const onValidationError = vi.fn();
+        const storage = createLocalStorage(schemas, { onFailure: "clear", onValidationError });
+
+        const result = storage.getItem("user");
+
+        expect(result).toBeNull();
+        expect(onValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+        expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("user");
+      });
+
+      it("should call global onValidationError on schema validation failure with throw mode", () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        mockLocalStorage.getItem.mockReturnValue(JSON.stringify(invalidUser));
+
+        const onValidationError = vi.fn();
+        const storage = createLocalStorage(schemas, { onFailure: "throw", onValidationError });
+
+        expect(() => storage.getItem("user")).toThrow("Validation failed");
+        expect(onValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+      });
+
+      it("should use options.onValidationError over global onValidationError", () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        mockLocalStorage.getItem.mockReturnValue(JSON.stringify(invalidUser));
+
+        const globalOnValidationError = vi.fn();
+        const localOnValidationError = vi.fn();
+        const storage = createLocalStorage(schemas, {
+          onFailure: "clear",
+          onValidationError: globalOnValidationError,
+        });
+
+        storage.getItem("user", { onValidationError: localOnValidationError });
+
+        expect(globalOnValidationError).not.toHaveBeenCalled();
+        expect(localOnValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+      });
+
+      it("should not call onValidationError on JSON parse failure", () => {
+        mockLocalStorage.getItem.mockReturnValue("invalid json");
+
+        const onValidationError = vi.fn();
+        const storage = createLocalStorage(schemas, { onFailure: "clear", onValidationError });
+
+        const result = storage.getItem("user");
+
+        expect(result).toBeNull();
+        expect(onValidationError).not.toHaveBeenCalled();
+        expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("user");
+      });
+
+      it("should not call onValidationError when validation succeeds", () => {
+        mockLocalStorage.getItem.mockReturnValue(JSON.stringify(sampleUser));
+
+        const onValidationError = vi.fn();
+        const storage = createLocalStorage(schemas, { onValidationError });
+
+        const result = storage.getItem("user");
+
+        expect(result).toEqual(sampleUser);
+        expect(onValidationError).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe("setItem", () => {
