@@ -1,4 +1,5 @@
 import AsyncStorageImpl from "@react-native-async-storage/async-storage";
+import type { z } from "zod";
 import type {
   AllKeysReturnType,
   AsyncStorageInstance,
@@ -13,7 +14,7 @@ export function createAsyncStorage<
   TSchemas extends SchemaMap,
   UOptions extends GlobalOptions = { strict: true },
 >(schemas: TSchemas, globalOptions?: UOptions): AsyncStorageInstance<TSchemas, UOptions> {
-  const { onFailure = "clear", debug = false } = globalOptions || {};
+  const { onFailure = "clear", debug = false, onValidationError } = globalOptions || {};
 
   const logClearedInvalidItem = (key: string) => {
     if (debug) console.warn("Cleared invalid item", key);
@@ -26,6 +27,7 @@ export function createAsyncStorage<
     key: TKey,
     storedValue: string,
     failureMode: "clear" | "throw",
+    validationErrorCallback?: (key: string, error: z.ZodError, value: unknown) => void,
   ): Promise<InferredValue<TSchemas, TKey> | null> => {
     // Only parse JSON if we have a schema for this key
     if (key in schemas) {
@@ -50,6 +52,8 @@ export function createAsyncStorage<
         const result = schema.safeParse(parsedValue);
 
         if (!result.success) {
+          validationErrorCallback?.(key, result.error, parsedValue);
+
           if (failureMode === "clear") {
             await AsyncStorageImpl.removeItem(key);
             logClearedInvalidItem(key);
@@ -76,7 +80,13 @@ export function createAsyncStorage<
         }
 
         const failureMode = options?.onFailure ?? onFailure;
-        const data = await parseAndValidateValue(key, storedValue, failureMode);
+        const validationErrorCallback = options?.onValidationError ?? onValidationError;
+        const data = await parseAndValidateValue(
+          key,
+          storedValue,
+          failureMode,
+          validationErrorCallback,
+        );
         callback?.(null, data);
         return data;
       } catch (error) {
@@ -138,7 +148,13 @@ export function createAsyncStorage<
             }
 
             const failureMode = options?.onFailure ?? onFailure;
-            const data = await parseAndValidateValue(key, value, failureMode);
+            const validationErrorCallback = options?.onValidationError ?? onValidationError;
+            const data = await parseAndValidateValue(
+              key,
+              value,
+              failureMode,
+              validationErrorCallback,
+            );
             return [keys[index], data];
           }),
         )) as MultiGetResult<TSchemas, typeof keys>;

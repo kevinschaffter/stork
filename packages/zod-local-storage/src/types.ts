@@ -1,11 +1,12 @@
 import type { z } from "zod";
 
-export type GetItemOptions = Pick<GlobalOptions, "onFailure">;
+export type GetItemOptions = Pick<GlobalOptions, "onFailure" | "onValidationError">;
 
 export type GlobalOptions = {
   strict?: boolean;
   onFailure?: "clear" | "throw";
   debug?: boolean;
+  onValidationError?: (key: string, error: z.ZodError, value: unknown) => void;
 };
 
 export type SchemaMap = Record<string, z.ZodType>;

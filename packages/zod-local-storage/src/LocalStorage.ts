@@ -1,10 +1,11 @@
+import type { z } from "zod";
 import type { GlobalOptions, InferredValue, LocalStorageInstance, SchemaMap } from "./types";
 
 export function createLocalStorage<
   TSchemas extends SchemaMap,
   UOptions extends GlobalOptions = { strict: true },
 >(schemas: TSchemas, globalOptions?: UOptions): LocalStorageInstance<TSchemas, UOptions> {
-  const { onFailure = "clear", debug = false } = globalOptions || {};
+  const { onFailure = "clear", debug = false, onValidationError } = globalOptions || {};
 
   const logClearedInvalidItem = (key: string) => {
     if (debug) console.warn("Cleared invalid item", key);
@@ -17,6 +18,7 @@ export function createLocalStorage<
     key: TKey,
     storedValue: string,
     failureMode: "clear" | "throw",
+    validationErrorCallback?: (key: string, error: z.ZodError, value: unknown) => void,
   ): InferredValue<TSchemas, TKey> | null => {
     // Only parse JSON if we have a schema for this key
     if (key in schemas) {
@@ -41,6 +43,8 @@ export function createLocalStorage<
         const result = schema.safeParse(parsedValue);
 
         if (!result.success) {
+          validationErrorCallback?.(key, result.error, parsedValue);
+
           if (failureMode === "clear") {
             localStorage.removeItem(key);
             logClearedInvalidItem(key);
@@ -66,7 +70,8 @@ export function createLocalStorage<
         }
 
         const failureMode = options?.onFailure ?? onFailure;
-        return parseAndValidateValue(key, storedValue, failureMode);
+        const validationErrorCallback = options?.onValidationError ?? onValidationError;
+        return parseAndValidateValue(key, storedValue, failureMode, validationErrorCallback);
       } catch (error) {
         throw toError(error);
       }
