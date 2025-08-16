@@ -1,5 +1,11 @@
 # @stork-tools/zod-async-storage
 
+## 1.0.0
+
+### Major Changes
+
+- a6e47b7: Release V1
+
 ## 0.4.0
 
 ### Minor Changes
