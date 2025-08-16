@@ -132,6 +132,90 @@ describe("createAsyncStorage", () => {
 
       await expect(storage.getItem("user", { onFailure: "throw" })).rejects.toThrow("Invalid JSON");
     });
+
+    describe("onValidationError callback", () => {
+      it("should call global onValidationError on schema validation failure with clear mode", async () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        mockAsyncStorage.getItem.mockResolvedValue(JSON.stringify(invalidUser));
+        mockAsyncStorage.removeItem.mockResolvedValue(undefined);
+
+        const onValidationError = vi.fn();
+        const storage = createAsyncStorage(schemas, { onFailure: "clear", onValidationError });
+
+        const result = await storage.getItem("user");
+
+        expect(result).toBeNull();
+        expect(onValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+        expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith("user");
+      });
+
+      it("should call global onValidationError on schema validation failure with throw mode", async () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        mockAsyncStorage.getItem.mockResolvedValue(JSON.stringify(invalidUser));
+
+        const onValidationError = vi.fn();
+        const storage = createAsyncStorage(schemas, { onFailure: "throw", onValidationError });
+
+        await expect(storage.getItem("user")).rejects.toThrow("Validation failed");
+        expect(onValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+      });
+
+      it("should use options.onValidationError over global onValidationError", async () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        mockAsyncStorage.getItem.mockResolvedValue(JSON.stringify(invalidUser));
+        mockAsyncStorage.removeItem.mockResolvedValue(undefined);
+
+        const globalOnValidationError = vi.fn();
+        const localOnValidationError = vi.fn();
+        const storage = createAsyncStorage(schemas, {
+          onFailure: "clear",
+          onValidationError: globalOnValidationError,
+        });
+
+        await storage.getItem("user", { onValidationError: localOnValidationError });
+
+        expect(globalOnValidationError).not.toHaveBeenCalled();
+        expect(localOnValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+      });
+
+      it("should not call onValidationError on JSON parse failure", async () => {
+        mockAsyncStorage.getItem.mockResolvedValue("invalid json");
+        mockAsyncStorage.removeItem.mockResolvedValue(undefined);
+
+        const onValidationError = vi.fn();
+        const storage = createAsyncStorage(schemas, { onFailure: "clear", onValidationError });
+
+        const result = await storage.getItem("user");
+
+        expect(result).toBeNull();
+        expect(onValidationError).not.toHaveBeenCalled();
+        expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith("user");
+      });
+
+      it("should not call onValidationError when validation succeeds", async () => {
+        mockAsyncStorage.getItem.mockResolvedValue(JSON.stringify(sampleUser));
+
+        const onValidationError = vi.fn();
+        const storage = createAsyncStorage(schemas, { onValidationError });
+
+        const result = await storage.getItem("user");
+
+        expect(result).toEqual(sampleUser);
+        expect(onValidationError).not.toHaveBeenCalled();
+      });
+    });
   });
 
   describe("setItem", () => {
@@ -344,6 +428,57 @@ describe("createAsyncStorage", () => {
 
       expect(result).toEqual([["user", null]]);
       expect(mockAsyncStorage.removeItem).toHaveBeenCalledWith("user");
+    });
+
+    describe("onValidationError in multiGet", () => {
+      it("should call onValidationError for validation failures in multiGet", async () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        const mockResults = [
+          ["user", JSON.stringify(invalidUser)],
+          ["settings", JSON.stringify(sampleSettings)],
+        ];
+        mockAsyncStorage.multiGet.mockResolvedValue(mockResults);
+        mockAsyncStorage.removeItem.mockResolvedValue(undefined);
+
+        const onValidationError = vi.fn();
+        const storage = createAsyncStorage(schemas, { onFailure: "clear", onValidationError });
+
+        const result = await storage.multiGet(["user", "settings"]);
+
+        expect(result).toEqual([
+          ["user", null],
+          ["settings", sampleSettings],
+        ]);
+        expect(onValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+        expect(onValidationError).toHaveBeenCalledTimes(1);
+      });
+
+      it("should use options.onValidationError over global onValidationError in multiGet", async () => {
+        const invalidUser = { id: "invalid", name: 123, email: "not-email" };
+        const mockResults = [["user", JSON.stringify(invalidUser)]];
+        mockAsyncStorage.multiGet.mockResolvedValue(mockResults);
+        mockAsyncStorage.removeItem.mockResolvedValue(undefined);
+
+        const globalOnValidationError = vi.fn();
+        const localOnValidationError = vi.fn();
+        const storage = createAsyncStorage(schemas, {
+          onFailure: "clear",
+          onValidationError: globalOnValidationError,
+        });
+
+        await storage.multiGet(["user"], { onValidationError: localOnValidationError });
+
+        expect(globalOnValidationError).not.toHaveBeenCalled();
+        expect(localOnValidationError).toHaveBeenCalledWith(
+          "user",
+          expect.objectContaining({ issues: expect.any(Array) }),
+          invalidUser,
+        );
+      });
     });
   });
 
