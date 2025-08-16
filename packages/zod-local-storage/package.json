@@ -38,7 +38,7 @@
     "typescript",
     "persistence",
     "storage",
-    "client-side"
+    "typesafe"
   ],
   "author": "Kevin Schaffter <kevinschaffter@gmail.com>",
   "license": "MIT",

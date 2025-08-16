@@ -41,7 +41,8 @@
     "persistence",
     "mobile",
     "storage",
-    "react-native-async-storage"
+    "react-native-async-storage",
+    "typesafe"
   ],
   "author": "Kevin Schaffter <kevinschaffter@gmail.com>",
   "license": "MIT",
