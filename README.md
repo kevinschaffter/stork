@@ -1,289 +1,47 @@
-# @stork-tools/zod-async-storage
+# Stork Tools
 
-[![npm version](https://img.shields.io/npm/v/@stork-tools/zod-async-storage.svg)](https://www.npmjs.com/package/@stork-tools/zod-async-storage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-A **type-safe** and **validated** wrapper around `@react-native-async-storage/async-storage` using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with AsyncStorage in React Native and Expo applications.
+A collection of **type-safe** and **validated** storage wrappers using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with storage APIs across different platforms.
 
 ## ✨ Features
+
+Both packages share these core features:
 
 - 🛡️ **Type Safety**: Full TypeScript support with automatic type inference from Zod schemas
 - ✅ **Runtime Validation**: Automatic validation of stored/retrieved data using Zod schemas
 - 🔒 **Strict Mode**: Strict mode enabled by default to prevent access to undefined keys
 - 🧹 **Error Handling**: Configurable behavior for invalid data (clear or throw)
 - 🚀 **Zero Runtime Overhead**: Only validates data when schemas are provided
-- 📱 **React Native & Expo**: Compatible with both React Native and Expo projects
-- 🔄 **Drop-in Replacement**: Maintains the same API as AsyncStorage with added type safety
+- 🔄 **Drop-in Replacement**: Maintains the same API as the underlying storage with added type safety
+- 🔄 **Incremental Adoption**: Start with a single schema and add more later
+- 🪝 **React Hooks**: Optional React hooks for seamless integration
 
-## 📦 Installation
+## 📦 Packages
 
-```bash
-# Using pnpm (recommended)
-pnpm add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
+This monorepo contains two complementary packages for type-safe storage solutions:
 
-# Using npm
-npm install @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
+### [@stork-tools/zod-async-storage](./packages/zod-async-storage)
+[![npm version](https://img.shields.io/npm/v/@stork-tools/zod-async-storage.svg)](https://www.npmjs.com/package/@stork-tools/zod-async-storage)
 
-# Using yarn
-yarn add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
+**For React Native & Expo applications**
 
-# Using bun
-bun add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
-```
+A type-safe wrapper around `@react-native-async-storage/async-storage` with Zod validation. Perfect for mobile development with React Native and Expo.
 
-## 🚀 Quick Start
+### [@stork-tools/zod-local-storage](./packages/zod-local-storage)
+[![npm version](https://img.shields.io/npm/v/@stork-tools/zod-local-storage.svg)](https://www.npmjs.com/package/@stork-tools/zod-local-storage)
 
-```ts
-import { z } from "zod";
-import { createAsyncStorage } from "@stork-tools/zod-async-storage";
+**For Web & Browser applications**
 
-// Define your schemas
-const schemas = {
-  user: z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string().email(),
-  }),
-  settings: z.object({
-    theme: z.enum(["light", "dark"]),
-    notifications: z.boolean(),
-  }),
-};
+A type-safe wrapper around the browser's `localStorage` API with Zod validation. Ideal for web applications requiring client-side persistence.
 
-// Create type-safe storage
-const AsyncStorage = createAsyncStorage(schemas);
+## 📖 Getting Started
 
-// Use with full type safety
-await AsyncStorage.setItem("user", {
-  id: "123",
-  name: "John Doe",
-  email: "john@example.com",
-});
+Each package includes comprehensive documentation with installation instructions, API reference, and examples:
 
-const user = await AsyncStorage.getItem("user"); // Type: User | null
-```
-
-## 📖 API Reference
-
-### `createAsyncStorage(schemas, options?)`
-
-Creates a type-safe AsyncStorage instance with validation.
-
-#### Parameters
-
-- **`schemas`**: `Record<string, ZodSchema>` - Object mapping keys to Zod schemas
-- **`options`**: `GlobalOptions` (optional) - Configuration options
-
-#### Global Options
-
-```ts
-type GlobalOptions = {
-  strict?: boolean;        // Enforce only defined keys (default: true)
-  onFailure?: "clear" | "throw"; // Handle zod validation failures (default: "clear")
-  debug?: boolean;         // Enable debug logging (default: false)
-};
-```
-
-### Instance Methods
-
-All methods maintain the same signature as AsyncStorage but with added type safety:
-
-#### `getItem(key, options?, callback?)`
-
-Retrieves and validates an item from storage.
-
-```ts
-const user = await AsyncStorage.getItem("user");
-// Type: { id: string; name: string; email: string } | null
-
-// Per-operation options
-const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
-```
-
-#### `setItem(key, value, callback?)`
-
-Stores an item with automatic serialization and type validation.
-
-```ts
-await AsyncStorage.setItem("user", {
-  id: "123",
-  name: "John Doe",
-  email: "john@example.com",
-}); // ✅ Type-safe
-
-await AsyncStorage.setItem("user", { invalid: "data" }); // ❌ TypeScript error
-```
-
-#### `multiGet(keys, options?, callback?)`
-
-Retrieves multiple items with type safety for each key.
-
-```ts
-const results = await AsyncStorage.multiGet(["user", "settings"]);
-// Type: [["user", User | null], ["settings", Settings | null]]
-```
-
-#### `multiSet(keyValuePairs, callback?)`
-
-Sets multiple items with type validation.
-
-```ts
-await AsyncStorage.multiSet([
-  ["user", { id: "123", name: "John", email: "john@example.com" }],
-  ["settings", { theme: "dark", notifications: true }],
-]);
-```
-
-#### Other Methods
-
-- `removeItem(key, callback?)` - Remove an item
-- `clear(callback?)` - Clear all storage
-- `getAllKeys(callback?)` - Get all keys
-- `multiRemove(keys, callback?)` - Remove multiple items
-- `mergeItem(key, value, callback?)` - Merge with existing item
-- `multiMerge(keyValuePairs, callback?)` - Merge multiple items
-- `flushGetRequests()` - Flush pending get requests
-
-## 🎯 Usage Examples
-
-### Basic Usage
-
-```ts
-import { z } from "zod";
-import { createAsyncStorage } from "@stork-tools/zod-async-storage";
-
-const schemas = {
-  user: z.object({
-    id: z.string(),
-    name: z.string(),
-    preferences: z.object({
-      theme: z.enum(["light", "dark"]),
-      language: z.string(),
-    }),
-  }),
-};
-
-const AsyncStorage = createAsyncStorage(schemas);
-
-// Set data
-await AsyncStorage.setItem("user", {
-  id: "u1",
-  name: "Alice",
-  preferences: {
-    theme: "dark",
-    language: "en",
-  },
-});
-
-// Get data (fully typed)
-const user = await AsyncStorage.getItem("user");
-if (user) {
-  console.log(user.preferences.theme); // TypeScript knows this exists
-}
-```
-
-### Strict Mode (Default)
-
-By default, strict mode is enabled to prevent access to undefined keys:
-
-```ts
-const AsyncStorage = createAsyncStorage(schemas); // strict: true by default
-
-await AsyncStorage.getItem("user");        // ✅ OK
-await AsyncStorage.getItem("someUndefinedKey");   // ❌ TypeScript error
-```
-
-### Loose Mode
-
-Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
-
-```ts
-const AsyncStorage = createAsyncStorage(schemas, { strict: false });
-
-await AsyncStorage.getItem("user");      // Type: User | null (validated)
-await AsyncStorage.getItem("any-key");   // Type: string | null (loose autocomplete, no validation)
-```
-
-With `strict: false`, you get:
-- **Loose autocomplete**: Access any string key
-- **Type-safe returns**: Keys matching schemas return validated types
-- **Raw string fallback**: Unknown keys return `string | null`
-
-### Error Handling
-
-Configure how validation failures are handled:
-
-```ts
-// Clear invalid data (default)
-const AsyncStorage = createAsyncStorage(schemas, { onFailure: "clear" });
-
-// Throw errors on invalid data
-const AsyncStorage = createAsyncStorage(schemas, { onFailure: "throw" });
-
-// Per-operation override
-const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
-```
-
-### Working with Raw Strings
-
-Keys without schemas work with raw strings:
-
-```ts
-const schemas = {
-  user: z.object({ name: z.string() }),
-  // 'token' has no schema
-};
-
-const AsyncStorage = createAsyncStorage(schemas);
-
-await AsyncStorage.setItem("user", { name: "John" });  // Validated object
-await AsyncStorage.setItem("token", "abc123");         // Raw string
-```
-
-
-## 🪝 React Hooks
-
-```ts
-import { createAsyncStorage, createUseAsyncStorage } from "@stork-tools/zod-async-storage";
-
-const storage = createAsyncStorage(schemas);
-const { useAsyncStorage } = createUseAsyncStorage(storage);
-
-function UserProfile() {
-  const { getItem, setItem, removeItem } = useAsyncStorage("user");
-  
-  const loadUser = async () => {
-    const user = await getItem(); // Fully typed
-  };
-  
-  const saveUser = async () => {
-    await setItem({ id: "123", name: "John" });
-  };
-  
-  const clearUser = async () => {
-    await removeItem();
-  };
-  
-  // Your component JSX...
-}
-```
-
-## 🔧 Advanced Configuration
-
-### Debug Mode
-
-Enable debug logging to monitor validation failures:
-
-```ts
-const AsyncStorage = createAsyncStorage(schemas, {
-  debug: true,
-  onFailure: "clear",
-});
-
-// When invalid data is found and cleared, you'll see:
-// console.warn("Cleared invalid item", key);
-```
+- **AsyncStorage**: See the [zod-async-storage README](./packages/zod-async-storage/README.md)
+- **localStorage**: See the [zod-local-storage README](./packages/zod-local-storage/README.md)
 
 ## 🤝 Contributing
 
