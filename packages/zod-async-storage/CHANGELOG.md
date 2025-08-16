@@ -1,5 +1,11 @@
 # @stork-tools/zod-async-storage
 
+## 0.3.0
+
+### Minor Changes
+
+- 8f1221d: chore: update package.json
+
 ## 0.2.2
 
 ### Patch Changes
