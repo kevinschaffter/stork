@@ -1,11 +1,12 @@
 import type { z } from "zod";
 
-export type GetItemOptions = Pick<GlobalOptions, "onFailure">;
+export type GetItemOptions = Pick<GlobalOptions, "onFailure" | "onValidationError">;
 
 export type GlobalOptions = {
   strict?: boolean;
   onFailure?: "clear" | "throw";
   debug?: boolean;
+  onValidationError?: (key: string, error: z.ZodError, value: unknown) => void;
 };
 
 export type SchemaMap = Record<string, z.ZodType>;
@@ -17,7 +18,9 @@ export type StrictKeyConstraint<TSchemas, UOptions extends GlobalOptions> = UOpt
   : (keyof TSchemas & string) | (string & {});
 
 export type InferredValue<TSchemas, UKey> = UKey extends keyof TSchemas
-  ? z.infer<TSchemas[UKey]>
+  ? TSchemas[UKey] extends z.ZodType
+    ? z.infer<TSchemas[UKey]>
+    : never
   : string;
 
 export type LocalStorageInstance<TSchemas extends SchemaMap, UOptions extends GlobalOptions> = {

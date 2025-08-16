@@ -12,7 +12,7 @@ describe("createUseAsyncStorage", () => {
   const userSchema = z.object({
     id: z.number(),
     name: z.string(),
-    email: z.email(),
+    email: z.string().email(),
   });
 
   const settingsSchema = z.object({
