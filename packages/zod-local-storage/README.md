@@ -1,42 +1,43 @@
-# @stork-tools/zod-async-storage
+# @stork-tools/zod-local-storage
 
-[![npm version](https://img.shields.io/npm/v/@stork-tools/zod-async-storage.svg)](https://www.npmjs.com/package/@stork-tools/zod-async-storage)
+[![npm version](https://img.shields.io/npm/v/@stork-tools/zod-local-storage.svg)](https://www.npmjs.com/package/@stork-tools/zod-local-storage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-A **type-safe** and **validated** wrapper around `@react-native-async-storage/async-storage` using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with AsyncStorage in React Native and Expo applications.
+A **type-safe** and **validated** wrapper around `localStorage` using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with localStorage in web applications. This library is a drop-in replacement for `localStorage` with added type safety.
 
 ## ✨ Features
 
 - 🛡️ **Type Safety**: Full TypeScript support with automatic type inference from Zod schemas
+- 🔄 **Drop-in Replacement**: Maintains the same API as localStorage with added type safety
+- 🔄 **Incremental adoption**: You can start with a single schema and add more later
 - ✅ **Runtime Validation**: Automatic validation of stored/retrieved data using Zod schemas
 - 🔒 **Strict Mode**: Strict mode enabled by default to prevent access to undefined keys
 - 🧹 **Error Handling**: Configurable behavior for invalid data (clear or throw)
 - 🚀 **Zero Runtime Overhead**: Only validates data when schemas are provided
-- 📱 **React Native & Expo**: Compatible with both React Native and Expo projects
-- 🔄 **Drop-in Replacement**: Maintains the same API as AsyncStorage with added type safety
+- 🌐 **Browser Compatible**: Works in all modern browsers with localStorage support
 
 ## 📦 Installation
 
 ```bash
 # Using pnpm (recommended)
-pnpm add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
+pnpm add @stork-tools/zod-local-storage zod
 
 # Using npm
-npm install @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
+npm install @stork-tools/zod-local-storage zod
 
 # Using yarn
-yarn add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
+yarn add @stork-tools/zod-local-storage zod
 
 # Using bun
-bun add @stork-tools/zod-async-storage zod @react-native-async-storage/async-storage
+bun add @stork-tools/zod-local-storage zod
 ```
 
 ## 🚀 Quick Start
 
 ```ts
 import { z } from "zod";
-import { createAsyncStorage } from "@stork-tools/zod-async-storage";
+import { createLocalStorage } from "@stork-tools/zod-local-storage";
 
 // Define your schemas
 const schemas = {
@@ -52,23 +53,23 @@ const schemas = {
 };
 
 // Create type-safe storage
-const AsyncStorage = createAsyncStorage(schemas);
+const localStorage = createLocalStorage(schemas);
 
 // Use with full type safety
-await AsyncStorage.setItem("user", {
+localStorage.setItem("user", {
   id: "123",
   name: "John Doe",
   email: "john@example.com",
 });
 
-const user = await AsyncStorage.getItem("user"); // Type: User | null
+const user = localStorage.getItem("user"); // Type: User | null
 ```
 
 ## 📖 API Reference
 
-### `createAsyncStorage(schemas, options?)`
+### `createLocalStorage(schemas, options?)`
 
-Creates a type-safe AsyncStorage instance with validation.
+Creates a type-safe localStorage instance with validation.
 
 #### Parameters
 
@@ -87,63 +88,65 @@ type GlobalOptions = {
 
 ### Instance Methods
 
-All methods maintain the same signature as AsyncStorage but with added type safety:
+All methods maintain the same signature as localStorage but with added type safety:
 
-#### `getItem(key, options?, callback?)`
+#### `getItem(key, options?)`
 
 Retrieves and validates an item from storage.
 
 ```ts
-const user = await AsyncStorage.getItem("user");
+const user = localStorage.getItem("user");
 // Type: { id: string; name: string; email: string } | null
 
 // Per-operation options
-const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
+const user = localStorage.getItem("user", { onFailure: "throw" });
 ```
 
-#### `setItem(key, value, callback?)`
+#### `setItem(key, value)`
 
 Stores an item with automatic serialization and type validation.
 
 ```ts
-await AsyncStorage.setItem("user", {
+localStorage.setItem("user", {
   id: "123",
   name: "John Doe",
   email: "john@example.com",
 }); // ✅ Type-safe
 
-await AsyncStorage.setItem("user", { invalid: "data" }); // ❌ TypeScript error
+localStorage.setItem("user", { invalid: "data" }); // ❌ TypeScript error
 ```
 
-#### `multiGet(keys, options?, callback?)`
+#### `removeItem(key)`
 
-Retrieves multiple items with type safety for each key.
+Removes an item from storage.
 
 ```ts
-const results = await AsyncStorage.multiGet(["user", "settings"]);
-// Type: [["user", User | null], ["settings", Settings | null]]
+localStorage.removeItem("user");
 ```
 
-#### `multiSet(keyValuePairs, callback?)`
+#### `clear()`
 
-Sets multiple items with type validation.
+Clears all storage.
 
 ```ts
-await AsyncStorage.multiSet([
-  ["user", { id: "123", name: "John", email: "john@example.com" }],
-  ["settings", { theme: "dark", notifications: true }],
-]);
+localStorage.clear();
 ```
 
-#### Other Methods
+#### `key(index)`
 
-- `removeItem(key, callback?)` - Remove an item
-- `clear(callback?)` - Clear all storage
-- `getAllKeys(callback?)` - Get all keys
-- `multiRemove(keys, callback?)` - Remove multiple items
-- `mergeItem(key, value, callback?)` - Merge with existing item
-- `multiMerge(keyValuePairs, callback?)` - Merge multiple items
-- `flushGetRequests()` - Flush pending get requests
+Gets the key at the specified index.
+
+```ts
+const keyAtIndex = localStorage.key(0); // string | null
+```
+
+#### `length`
+
+Gets the number of items in storage.
+
+```ts
+const itemCount = localStorage.length; // number
+```
 
 ## 🎯 Usage Examples
 
@@ -151,7 +154,7 @@ await AsyncStorage.multiSet([
 
 ```ts
 import { z } from "zod";
-import { createAsyncStorage } from "@stork-tools/zod-async-storage";
+import { createLocalStorage } from "@stork-tools/zod-local-storage";
 
 const schemas = {
   user: z.object({
@@ -164,10 +167,10 @@ const schemas = {
   }),
 };
 
-const AsyncStorage = createAsyncStorage(schemas);
+const localStorage = createLocalStorage(schemas);
 
 // Set data
-await AsyncStorage.setItem("user", {
+localStorage.setItem("user", {
   id: "u1",
   name: "Alice",
   preferences: {
@@ -177,7 +180,7 @@ await AsyncStorage.setItem("user", {
 });
 
 // Get data (fully typed)
-const user = await AsyncStorage.getItem("user");
+const user = localStorage.getItem("user");
 if (user) {
   console.log(user.preferences.theme); // TypeScript knows this exists
 }
@@ -188,21 +191,21 @@ if (user) {
 By default, strict mode is enabled to prevent access to undefined keys:
 
 ```ts
-const AsyncStorage = createAsyncStorage(schemas); // strict: true by default
+const localStorage = createLocalStorage(schemas); // strict: true by default
 
-await AsyncStorage.getItem("user");        // ✅ OK
-await AsyncStorage.getItem("someUndefinedKey");   // ❌ TypeScript error
+localStorage.getItem("user");        // ✅ OK
+localStorage.getItem("someUndefinedKey");   // ❌ TypeScript error
 ```
 
 ### Loose Mode
 
-Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
+Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-local-storage` and want to maintain access to keys that are not yet defined in schemas.
 
 ```ts
-const AsyncStorage = createAsyncStorage(schemas, { strict: false });
+const storage = createLocalStorage(schemas, { strict: false });
 
-await AsyncStorage.getItem("user");      // Type: User | null (validated)
-await AsyncStorage.getItem("any-key");   // Type: string | null (loose autocomplete, no validation)
+localStorage.getItem("user");      // Type: User | null (validated)
+localStorage.getItem("any-key");   // Type: string | null (loose autocomplete, no validation)
 ```
 
 With `strict: false`, you get:
@@ -216,13 +219,13 @@ Configure how validation failures are handled:
 
 ```ts
 // Clear invalid data (default)
-const AsyncStorage = createAsyncStorage(schemas, { onFailure: "clear" });
+const storage = createLocalStorage(schemas, { onFailure: "clear" });
 
 // Throw errors on invalid data
-const AsyncStorage = createAsyncStorage(schemas, { onFailure: "throw" });
+const storage = createLocalStorage(schemas, { onFailure: "throw" });
 
 // Per-operation override
-const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
+const user = localStorage.getItem("user", { onFailure: "throw" });
 ```
 
 ### Working with Raw Strings
@@ -235,39 +238,44 @@ const schemas = {
   // 'token' has no schema
 };
 
-const AsyncStorage = createAsyncStorage(schemas);
+const localStorage = createLocalStorage(schemas);
 
-await AsyncStorage.setItem("user", { name: "John" });  // Validated object
-await AsyncStorage.setItem("token", "abc123");         // Raw string
+localStorage.setItem("user", { name: "John" });  // Validated object
+localStorage.setItem("token", "abc123");         // Raw string
 ```
-
 
 ## 🪝 React Hooks
 
 ```ts
-import { createAsyncStorage, createUseAsyncStorage } from "@stork-tools/zod-async-storage";
+import { createLocalStorage, createUseLocalStorage } from "@stork-tools/zod-local-storage";
 
-const storage = createAsyncStorage(schemas);
-const { useAsyncStorage } = createUseAsyncStorage(storage);
+const storage = createLocalStorage(schemas);
+const { useLocalStorage } = createUseLocalStorage(storage);
 
 function UserProfile() {
-  const { getItem, setItem, removeItem } = useAsyncStorage("user");
+  const { getItem, setItem, removeItem } = useLocalStorage("user");
   
-  const loadUser = async () => {
-    const user = await getItem(); // Fully typed
+  const loadUser = () => {
+    const user = getItem(); // Type: User | null
   };
   
-  const saveUser = async () => {
-    await setItem({ id: "123", name: "John" });
+  const saveUser = () => {
+    setItem({ id: "123", name: "John", email: "john@example.com" });
   };
   
-  const clearUser = async () => {
-    await removeItem();
+  const clearUser = () => {
+    removeItem();
   };
-  
-  // Your component JSX...
 }
 ```
+
+### Hook Methods
+
+- `getItem(options?)` - Retrieve item with type safety
+- `setItem(value)` - Store item with validation  
+- `removeItem()` - Remove item from storage
+
+All methods support the same options as the storage instance.
 
 ## 🔧 Advanced Configuration
 
@@ -276,13 +284,52 @@ function UserProfile() {
 Enable debug logging to monitor validation failures:
 
 ```ts
-const AsyncStorage = createAsyncStorage(schemas, {
+const storage = createLocalStorage(schemas, {
   debug: true,
   onFailure: "clear",
 });
 
 // When invalid data is found and cleared, you'll see:
 // console.warn("Cleared invalid item", key);
+```
+
+### Browser Compatibility
+
+This library works in all modern browsers that support localStorage:
+
+- Chrome 4+
+- Firefox 3.5+
+- Safari 4+
+- IE 8+
+- Edge (all versions)
+
+### Storage Limitations
+
+localStorage has some limitations to be aware of:
+
+- **Storage Limit**: ~5-10MB per origin (varies by browser)
+- **Synchronous**: All operations are synchronous and can block the main thread
+- **String Only**: localStorage only stores strings (this library handles JSON serialization automatically)
+- **Same Origin**: Data is only accessible within the same origin
+
+### Error Scenarios
+
+Common localStorage errors this library handles:
+
+```ts
+// Quota exceeded
+try {
+  localStorage.setItem("key", largeData);
+} catch (error) {
+  // Handle storage quota exceeded
+}
+
+// localStorage disabled/unavailable
+try {
+  const data = localStorage.getItem("key");
+} catch (error) {
+  // Handle localStorage not available (private browsing, etc.)
+}
 ```
 
 ## 🤝 Contributing
@@ -329,7 +376,7 @@ We welcome contributions from the community! Whether you're fixing bugs, adding 
 - **Changesets**: Run `pnpm changeset` for user-facing changes
 - **Code Style**: Follow existing patterns, JSDoc for public APIs
 
-For detailed contributing guidelines, see [CONTRIBUTING.md](CONTRIBUTING.md).
+For detailed contributing guidelines, see [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 ## 📝 License
 
@@ -338,4 +385,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - [Zod](https://github.com/colinhacks/zod) for the excellent schema validation library
-- [React Native AsyncStorage](https://github.com/react-native-async-storage/async-storage) for the underlying storage implementation
+- [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) for the underlying storage implementation

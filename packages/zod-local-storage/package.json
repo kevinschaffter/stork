@@ -1,0 +1,70 @@
+{
+  "name": "@stork-tools/zod-local-storage",
+  "version": "0.1.0",
+  "description": "Zod-validated wrapper around localStorage with type-safe APIs",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "sideEffects": false,
+  "files": [
+    "dist/**",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsup --watch",
+    "lint": "biome check .",
+    "lint:fix": "biome check . --write --unsafe",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "browser",
+    "web",
+    "localStorage",
+    "zod",
+    "validation",
+    "schema",
+    "typescript",
+    "persistence",
+    "storage",
+    "client-side"
+  ],
+  "author": "Kevin Schaffter <kevinschaffter@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinschaffter/stork.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kevinschaffter/stork/issues"
+  },
+  "homepage": "https://github.com/kevinschaffter/stork#readme",
+  "peerDependencies": {
+    "zod": ">=4.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.1.4",
+    "@changesets/cli": "^2.29.5",
+    "jsdom": "^26.1.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.2",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
