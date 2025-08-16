@@ -4,18 +4,18 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
-A **type-safe** and **validated** wrapper around `@react-native-async-storage/async-storage` using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with AsyncStorage in React Native and Expo applications.
+A **type-safe** and **validated** wrapper around `@react-native-async-storage/async-storage` using Zod schemas. Enjoy the benefits of runtime validation, automatic type inference, and better developer experience when working with AsyncStorage in React Native and Expo applications. This library is a drop-in replacement for `@react-native-async-storage/async-storage` with added type safety.
 
 ## ✨ Features
 
 - 🛡️ **Type Safety**: Full TypeScript support with automatic type inference from Zod schemas
+- 🔄 **Drop-in Replacement**: Maintains the same API as AsyncStorage with added type safety
 - 🔄 **Incremental adoption**: You can start with a single schema and add more later
 - ✅ **Runtime Validation**: Automatic validation of stored/retrieved data using Zod schemas
 - 🔒 **Strict Mode**: Strict mode enabled by default to prevent access to undefined keys
 - 🧹 **Error Handling**: Configurable behavior for invalid data (clear or throw)
 - 🚀 **Zero Runtime Overhead**: Only validates data when schemas are provided
 - 📱 **React Native & Expo**: Compatible with both React Native and Expo projects
-- 🔄 **Drop-in Replacement**: Maintains the same API as AsyncStorage with added type safety
 
 ## 📦 Installation
 
