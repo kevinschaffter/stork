@@ -30,10 +30,6 @@ describe("createLocalStorage", () => {
     email: "john@example.com",
   };
 
-  const _sampleSettings: { theme: "light" | "dark"; notifications: boolean } = {
-    theme: "dark",
-    notifications: true,
-  };
 
   describe("getItem", () => {
     it("should get and parse valid JSON for schema key", () => {
