@@ -30,7 +30,6 @@ describe("createLocalStorage", () => {
     email: "john@example.com",
   };
 
-
   describe("getItem", () => {
     it("should get and parse valid JSON for schema key", () => {
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(sampleUser));
