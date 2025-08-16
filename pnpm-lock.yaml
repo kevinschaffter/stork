@@ -29,9 +29,6 @@ importers:
       '@react-native-async-storage/async-storage':
         specifier: '>=2.0.0'
         version: 2.2.0(react-native@0.80.2(@babel/core@7.28.0)(@types/react@19.1.9)(react@19.1.1))
-      zod:
-        specifier: '>=4.0.0'
-        version: 4.0.16
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.1.4
@@ -48,12 +45,11 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.2.1)(jsdom@26.1.0)(lightningcss@1.27.0)(terser@5.43.1)
+      zod:
+        specifier: ^4.0.17
+        version: 4.0.17
 
   packages/zod-local-storage:
-    dependencies:
-      zod:
-        specifier: '>=4.0.0'
-        version: 4.0.16
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.1.4
@@ -73,6 +69,9 @@ importers:
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/debug@4.1.12)(@types/node@24.2.1)(jsdom@26.1.0)(lightningcss@1.27.0)(terser@5.43.1)
+      zod:
+        specifier: ^4.0.17
+        version: 4.0.17
 
 packages:
 
@@ -2737,8 +2736,8 @@ packages:
     resolution: {integrity: sha512-7dSzzRQ++CKnNI/krKnYRV7JKKPUXMEh61soaHKg9mrWEhzFWhFnxPxGl+69cD1Ou63C13NUPCnmIcrvqCuM6w==}
     engines: {node: '>=12'}
 
-  zod@4.0.16:
-    resolution: {integrity: sha512-Djo/cM339grjI7/HmN+ixYO2FzEMcWr/On50UlQ/RjrWK1I/hPpWhpC76heCptnRFpH0LMwrEbUY50HDc0V8wg==}
+  zod@4.0.17:
+    resolution: {integrity: sha512-1PHjlYRevNxxdy2JZ8JcNAw7rX8V9P1AKkP+x/xZfxB0K5FYfuV+Ug6P/6NVSR2jHQ+FzDDoDHS04nYUsOIyLQ==}
 
 snapshots:
 
@@ -5491,4 +5490,4 @@ snapshots:
       y18n: 5.0.8
       yargs-parser: 21.1.1
 
-  zod@4.0.16: {}
+  zod@4.0.17: {}

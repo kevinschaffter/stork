@@ -18,7 +18,9 @@ export type StrictKeyConstraint<TSchemas, UOptions extends GlobalOptions> = UOpt
   : (keyof TSchemas & string) | (string & {});
 
 export type InferredValue<TSchemas, UKey> = UKey extends keyof TSchemas
-  ? z.infer<TSchemas[UKey]>
+  ? TSchemas[UKey] extends z.ZodType
+    ? z.infer<TSchemas[UKey]>
+    : never
   : string;
 
 export type LocalStorageInstance<TSchemas extends SchemaMap, UOptions extends GlobalOptions> = {

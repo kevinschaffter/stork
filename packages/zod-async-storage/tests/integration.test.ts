@@ -14,7 +14,7 @@ describe("Integration Tests", () => {
       const userSchema = z.object({
         id: z.number(),
         name: z.string(),
-        email: z.email(),
+        email: z.string().email(),
         preferences: z.object({
           theme: z.enum(["light", "dark"]),
           notifications: z.boolean(),
@@ -130,7 +130,7 @@ describe("Integration Tests", () => {
       const schemas = {
         user: z.object({
           id: z.number(),
-          email: z.email(),
+          email: z.string().email(),
         }),
       };
 
@@ -188,7 +188,7 @@ describe("Integration Tests", () => {
       const schemas = {
         user: z.object({
           id: z.number(),
-          email: z.email(),
+          email: z.string().email(),
         }),
       };
 
@@ -372,7 +372,7 @@ describe("Integration Tests", () => {
       const oldData = { name: "John", age: 30 }; // missing required 'email'
       const newSchema = z.object({
         name: z.string(),
-        email: z.email(), // new required field
+        email: z.string().email(), // new required field
         age: z.number().optional(), // now optional
       });
 

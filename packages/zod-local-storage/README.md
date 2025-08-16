@@ -44,7 +44,7 @@ const schemas = {
   user: z.object({
     id: z.string(),
     name: z.string(),
-    email: z.email(),
+    email: z.string().email(),
   }),
   settings: z.object({
     theme: z.enum(["light", "dark"]),
