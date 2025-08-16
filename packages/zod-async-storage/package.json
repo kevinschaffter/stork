@@ -1,6 +1,6 @@
 {
   "name": "@stork-tools/zod-async-storage",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "description": "Zod-validated wrapper around @react-native-async-storage/async-storage with type-safe APIs",
   "type": "module",
   "main": "./dist/index.cjs",
