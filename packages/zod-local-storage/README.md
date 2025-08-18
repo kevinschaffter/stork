@@ -52,8 +52,10 @@ const schemas = {
   }),
 };
 
-// Create type-safe storage
-const localStorage = createLocalStorage(schemas);
+// Create a single instance of type-safe storage
+export const localStorage = createLocalStorage(schemas);
+
+import { localStorage } from "~/local-storage";
 
 // Use with full type safety
 localStorage.setItem("user", {
@@ -168,7 +170,10 @@ const schemas = {
   }),
 };
 
-const localStorage = createLocalStorage(schemas);
+// Create a single instance of type-safe storage
+export const localStorage = createLocalStorage(schemas);
+
+import { localStorage } from "~/local-storage";
 
 // Set data
 localStorage.setItem("user", {
@@ -203,7 +208,7 @@ localStorage.getItem("someUndefinedKey");   // ❌ TypeScript error
 Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-local-storage` and want to maintain access to keys that are not yet defined in schemas.
 
 ```ts
-const storage = createLocalStorage(schemas, { strict: false });
+const localStorage = createLocalStorage(schemas, { strict: false });
 
 localStorage.getItem("user");      // Type: User | null (validated)
 localStorage.getItem("any-key");   // Type: string | null (loose autocomplete, no validation)
@@ -220,10 +225,10 @@ Configure how validation failures are handled:
 
 ```ts
 // Clear invalid data (default)
-const storage = createLocalStorage(schemas, { onFailure: "clear" });
+const localStorage = createLocalStorage(schemas, { onFailure: "clear" });
 
 // Throw errors on invalid data
-const storage = createLocalStorage(schemas, { onFailure: "throw" });
+const localStorage = createLocalStorage(schemas, { onFailure: "throw" });
 
 // Per-operation override
 const user = localStorage.getItem("user", { onFailure: "throw" });
@@ -234,7 +239,7 @@ const user = localStorage.getItem("user", { onFailure: "throw" });
 Get notified when validation fails using the `onValidationError` callback:
 
 ```ts
-const storage = createLocalStorage(schemas, {
+const localStorage = createLocalStorage(schemas, {
   onFailure: "clear",
   onValidationError: (key, error, value) => {
     // Log validation failures for monitoring
@@ -250,7 +255,7 @@ const storage = createLocalStorage(schemas, {
 });
 
 // Per-operation callback override
-const user = storage.getItem("user", {
+const user = localStorage.getItem("user", {
   onValidationError: (key, error, value) => {
     // Handle this specific validation error differently
     showUserErrorMessage(`Invalid user data: ${error.message}`);
@@ -286,8 +291,8 @@ localStorage.setItem("token", "abc123");         // Raw string
 ```ts
 import { createLocalStorage, createUseLocalStorage } from "@stork-tools/zod-local-storage";
 
-const storage = createLocalStorage(schemas);
-const { useLocalStorage } = createUseLocalStorage(storage);
+const localStorage = createLocalStorage(schemas);
+const { useLocalStorage } = createUseLocalStorage(localStorage);
 
 function UserProfile() {
   const { getItem, setItem, removeItem } = useLocalStorage("user");
@@ -321,7 +326,7 @@ All methods support the same options as the storage instance.
 Enable debug logging to monitor validation failures:
 
 ```ts
-const storage = createLocalStorage(schemas, {
+export const localStorage = createLocalStorage(schemas, {
   debug: true,
   onFailure: "clear",
 });

@@ -138,13 +138,13 @@ describe('createAsyncStorage', () => {
 
   it('should validate data when storing values', async () => {
     // Arrange
-    const storage = createAsyncStorage({
+    const AsyncStorage = createAsyncStorage({
       user: z.object({ name: z.string() })
     });
 
     // Act & Assert
     await expect(
-      storage.setItem('user', { name: 123 })
+      AsyncStorage.setItem('user', { name: 123 })
     ).rejects.toThrow('Invalid data');
   });
 });
