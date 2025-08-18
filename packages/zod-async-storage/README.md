@@ -52,8 +52,10 @@ const schemas = {
   }),
 };
 
-// Create type-safe storage
-const AsyncStorage = createAsyncStorage(schemas);
+// Create a single instance of type-safe storage
+export const AsyncStorage = createAsyncStorage(schemas);
+
+import { AsyncStorage } from "~/async-storage";
 
 // Use with full type safety
 await AsyncStorage.setItem("user", {
@@ -166,7 +168,10 @@ const schemas = {
   }),
 };
 
-const AsyncStorage = createAsyncStorage(schemas);
+// Create a single instance of type-safe storage
+export const AsyncStorage = createAsyncStorage(schemas);
+
+import { AsyncStorage } from "~/async-storage";
 
 // Set data
 await AsyncStorage.setItem("user", {
@@ -201,7 +206,7 @@ await AsyncStorage.getItem("someUndefinedKey");   // ❌ TypeScript error
 Disable strict mode to allow access to any key while maintaining type safety for schema-defined keys. This is useful if you are migrating to `@stork-tools/zod-async-storage` and want to maintain access to keys that are not yet defined in schemas.
 
 ```ts
-const storage = createAsyncStorage(schemas, { strict: false });
+const AsyncStorage = createAsyncStorage(schemas, { strict: false });
 
 await AsyncStorage.getItem("user");      // Type: User | null (validated)
 await AsyncStorage.getItem("any-key");   // Type: string | null (loose autocomplete, no validation)
@@ -218,10 +223,10 @@ Configure how validation failures are handled:
 
 ```ts
 // Clear invalid data (default)
-const storage = createAsyncStorage(schemas, { onFailure: "clear" });
+const AsyncStorage = createAsyncStorage(schemas, { onFailure: "clear" });
 
 // Throw errors on invalid data
-const storage = createAsyncStorage(schemas, { onFailure: "throw" });
+const AsyncStorage = createAsyncStorage(schemas, { onFailure: "throw" });
 
 // Per-operation override
 const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
@@ -232,7 +237,7 @@ const user = await AsyncStorage.getItem("user", { onFailure: "throw" });
 Get notified when validation fails using the `onValidationError` callback:
 
 ```ts
-const storage = createAsyncStorage(schemas, {
+const AsyncStorage = createAsyncStorage(schemas, {
   onFailure: "clear",
   onValidationError: (key, error, value) => {
     // Log validation failures for monitoring
@@ -248,7 +253,7 @@ const storage = createAsyncStorage(schemas, {
 });
 
 // Per-operation callback override
-const user = await storage.getItem("user", {
+const user = await AsyncStorage.getItem("user", {
   onValidationError: (key, error, value) => {
     // Handle this specific validation error differently
     showUserErrorMessage(`Invalid user data: ${error.message}`);
@@ -285,8 +290,8 @@ await AsyncStorage.setItem("token", "abc123");         // Raw string
 ```ts
 import { createAsyncStorage, createUseAsyncStorage } from "@stork-tools/zod-async-storage";
 
-const storage = createAsyncStorage(schemas);
-const { useAsyncStorage } = createUseAsyncStorage(storage);
+const AsyncStorage = createAsyncStorage(schemas);
+const { useAsyncStorage } = createUseAsyncStorage(AsyncStorage);
 
 function UserProfile() {
   const { getItem, setItem, mergeItem, removeItem } = useAsyncStorage("user");
@@ -325,7 +330,7 @@ All methods support the same options and callbacks as the storage instance.
 Enable debug logging to monitor validation failures:
 
 ```ts
-const storage = createAsyncStorage(schemas, {
+export const AsyncStorage = createAsyncStorage(schemas, {
   debug: true,
   onFailure: "clear",
 });
