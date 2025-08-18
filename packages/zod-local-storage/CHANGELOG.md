@@ -1,5 +1,11 @@
 # @stork-tools/zod-local-storage
 
+## 1.0.1
+
+### Patch Changes
+
+- b6c7baa: Update READMEs for clarity
+
 ## 1.0.0
 
 ### Major Changes
